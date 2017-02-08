@@ -1,0 +1,52 @@
+#include<Servo.h>
+
+#define x_pin  A1
+#define y_pin  A2
+#define buton 8
+#define led 9
+
+Servo servo;
+
+int xposition ; //joystick 'in x eksenindeki pozisyonu
+int yposition ;//joystick 'in y eksenindeki pozisyonu
+int butondurum ;//joystick 'in buton durumu
+
+void setup() {
+
+  Serial.begin(9600);
+
+  pinMode(x_pin, INPUT);  // pinleri giriş olarak tanımladık
+  pinMode(y_pin , INPUT);
+  pinMode(buton, INPUT);
+
+  servo.attach(7); // servoyu başlatıp pinini tanımladık
+}
+
+void loop() {
+
+
+  xposition   = analogRead(x_pin);   //x posizyonunu x_pin'den okutup atadık
+  yposition = analogRead(y_pin );
+  butondurum = digitalRead(buton);
+  xposition = map(xposition, 0, 1023, 0, 180);  //joystickten gelen 0-1023 arasındaki değeri 0-180 e çeviren komut
+  Serial.print("X: ");
+  Serial.println(xposition);
+
+  Serial.print(" | Buton: ");
+  Serial.println(butondurum);
+
+
+
+  servo.write(xposition);   //servoya açı olarak xposition 'daki değeri tanımladık
+  delay(30);
+
+  if (butondurum == 1)  //eğer buton basılı değilse led yanmasın
+  {
+    digitalWrite(led, LOW);
+
+  }
+  else if (butondurum == 0) //eğer buton basılı ise led yansın.
+  {
+    digitalWrite(led, HIGH);
+  }
+}
